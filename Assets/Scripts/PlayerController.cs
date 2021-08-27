@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
 
     private float zBound = 8;
     private Rigidbody playerRb;
-    // Start is called before the first frame update
+    // Start is called before the firs frame update
     void Start()
     {
         playerRb = GetComponent<Rigidbody>();
@@ -27,8 +27,11 @@ public class PlayerController : MonoBehaviour
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
 
-        playerRb.AddForce(Vector3.forward * speed * verticalInput);
-        playerRb.AddForce(Vector3.right * speed * horizontalInput);
+        //playerRb.AddForce(Vector3.forward * speed * verticalInput);
+        //playerRb.AddForce(Vector3.right * speed * horizontalInput);
+
+        transform.Translate(Vector3.forward * speed * verticalInput * Time.deltaTime);
+        transform.Translate(Vector3.right * speed * horizontalInput * Time.deltaTime);
     }
 
     void ContraintPlayerTopAndBottomPosition()
@@ -41,6 +44,22 @@ public class PlayerController : MonoBehaviour
         if (transform.position.z < -zBound)
         {
             transform.position = new Vector3(transform.position.x, transform.position.y, -zBound);
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.CompareTag("Enemy"))
+        {
+            Debug.Log("Enemy has collided with player");
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Powerup"))
+        {
+            Destroy(other.gameObject);
         }
     }
 }
